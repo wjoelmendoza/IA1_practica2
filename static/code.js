@@ -30,6 +30,35 @@ function myFunction() {
         });
 }
 
+
+$("#idForm").submit(function(e) {
+
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+    console.log('jijijiji');
+    var form = document.getElementById("idForm");
+    var y = document.getElementById("divcards");
+    var x = document.getElementById("divspinner");
+    var data = new FormData(form);
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    }
+    $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: '/cargar_imagenes',
+        data: data, // serializes the form's elements.
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: function(data) {
+            console.log(data); // show response from the php script.
+            y.innerHTML = data;
+        }
+    });
+
+
+});
+
 function uploadd() {
     var x = document.getElementById("inputGroupFile02");
     var formdata = new FormData();

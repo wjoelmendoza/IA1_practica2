@@ -1,51 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+
+<head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale"/>
+    <meta name="viewport" content="width=device-width, initial-scale" />
     <title>Práctica No. 2</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}"/>
-    <link rel="stylesheet" href="{{ url_for('static', filename='mystyles.css') }}"/>
-  </head>
-  <body>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='mystyles.css') }}" />
+</head>
+
+<body>
     <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
-      <div class="container">
-        <a href="../" class="navbar-brand">Práctica No. 2</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <div class="container">
+            <a href="../" class="navbar-brand">Práctica No. 2</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive"></div>
-      </div>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/modelos">Modelos</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
     <div class="container">
-      <div class="jumbotron">
-        <h1 class="display-3">Cargar imagenes</h1>
-        <div class="card text-white bg-primary mb-3" style="max-width: 100rem;">
-          <div class="card-header">Seleccione las imagenes</div>
-          <div class="card-body">
-            <div class="row mb-2">
-              <div class="col-md-6">
-                <div class="col p-4 d-flex flex-column position-static">
-                  <form action="/cargar_imagenes" method="POST" enctype="multipart/form-data">
-                    <div class="form-group">
-                      <div class="input-gruop mb-3">
-                        <div class="custom-file">
-                          <input id="img1" name="img1" type="file" class="custom-file-input" accept="image/jpeg" multiple="True"/>
-                          <label class="custom-file-label" for="img1">Seleccione las imagenes</label>
+        <div class="jumbotron">
+            <h1 class="display-3">Cargar imagenes</h1>
+            <div class="card text-white bg-primary mb-3" style="max-width: 100rem;">
+                <div class="card-header">Seleccione las imagenes</div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                            <div class="col p-4 d-flex flex-column position-static">
+                                <form id="idForm" action="/cargar_imagenes" method="POST" enctype="multipart/form-data" class="ajax">
+                                    <div class="form-group">
+                                        <div class="input-gruop mb-3">
+                                            <div class="custom-file">
+                                                <input id="img1" name="img1" type="file" class="custom-file-input" accept="image/jpeg" multiple="True" />
+                                                <label class="custom-file-label" for="img1">Seleccione las imagenes</label>
+                                            </div>
+                                            <div class="input-group-append">
+                                                <input type="submit" value="Predecir" class="input-group-text" />
+                                                <input type="reset" value="Cancelar" class="input-group-text" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <div class="input-group-append">
-                          <input type="submit" value="Aceptar" class="input-group-text" />
-                          <input type="reset" value="Cancelar" class="input-group-text" />
-                        </div>
-                      </div>
                     </div>
-                  </form>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
+        <div id="divcards" class="jumbotron">
+            <div id="divspinner" style="text-align: center; display: none;">
+                <div style="display: inline-block;">
+                    <div class="loader"></div>
+                </div>
+            </div>
+
+        </div>
+
+
     </div>
-  </body>
+    <footer class="footer bg-dark rounded-top text-center">
+        <div class="container py-2">
+            <p class="text-white my-2">
+                &copy; {{autor1.nombre + ' ' + autor1.apellido + ' &'}} {{autor2.nombre + ' ' + autor2.apellido}}
+            </p>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='code.js') }}"></script>
+</body>
+
 </html>
