@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 from flask import Flask, render_template, url_for, request
 from werkzeug.utils import secure_filename
-from logica.main import identificar_escudos,entreno_previo
+from logica.main import identificar_escudos,entreno_previo,entreno_envivo
 import os
 import json
 import base64
@@ -83,22 +83,24 @@ def cargar_imagenes():
     #    image = base64.b64encode(img_file.read()).decode('utf-8')
 
     #return render_template("resultado.html",img=image,autor1 = {"nombre":"Walter","apellido":"Mendoza"},autor2 = {"nombre":"Byron","apellido":"Lopez"},mensaje=('','',''))
-    return create_response_prediccion(x,cont1,cont2,cont3,cont4,cont5,conts)
+    return create_response_prediccion(x,cont1,cont2,cont3,cont4,cont5,conts,labels)
 
-def create_response_prediccion(preddicion,contusac,contlandivar,contmariano,contmarro,cont,conts):
+def create_response_prediccion(preddicion,contusac,contlandivar,contmariano,contmarro,cont,conts,labels):
     resp = ''
     print(preddicion)
     print('LEN PREDICCION::',len(preddicion))
-    if len(preddicion)<6:
+    if len(labels)<6:
         for tup in preddicion:
             resp += '''
-            <div class="card text-white bg-primary mb-3" style="max-width: 100rem;">
+            <div class="card-deck">
+            <div class="card text-white bg-primary mb-3" style="max-width: 15rem;">
                 <div class="card">
                     {}
                     <div class="card-body">
                         <h5 class="card-title">{}</h5>
                     </div>
                 </div>
+            </div>
             </div>'''.format(get_tag_image(tup[0]),tup[1])
         return resp
 

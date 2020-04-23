@@ -37,14 +37,30 @@
                 <img class="card-img-top" src="data:image/png;base64,{{ dat['img']}}" alt="Card image cap">
                 <div class="card-body">
                     <h4 class="card-title">{{dat['nombre']}}</h4>
-                    {% for inf in dat['info'] %}
-                    <h5>{{inf['nombre']}}</h5>
-                    <h5>exactitud entreno</h5>
-                    <h6>{{inf['exactitud-entreno']}}</h6>
-                    <h5>exactitud validacion </h5>
-                    <h6>{{inf['exactitud-validacion']}}</h6>
-                    <p class="card-text">lalal</p>
-                    {% endfor %}
+                    <div class="table-wrapper">
+                        <table class="table table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Modelo</th>
+                                    <th>exacitud entreno</th>
+                                    <th>exactitud validacion</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for inf in dat['info'] %}
+                                <tr>
+                                    <td>{{inf['nombre']}}</td>
+                                    <td>{{inf['exactitud-entreno']}}</td>
+                                    <td>{{inf['exactitud-validacion']}}</td>
+
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
             </div>
             {% endfor %}

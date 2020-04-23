@@ -9,37 +9,6 @@ import cv2
 import os
 import json
 from datetime import datetime
-def entrenar_modelo(name,hipers):
-    c = Udataset()
-    path = '/Datasets'+name+'.hdf5'
-    #Cargando conjuntos de datos
-    train_set_x_orig, train_set_y, test_set_x_orig, test_set_y, classes = c.load_dataset(os.getcwd()+'/logica/Datasets','USAC',True)
-    #print("---convertir imagenes a un solo arreglo::")
-    #print(train_set_x_orig.shape[0])
-    train_set_x = train_set_x_orig.reshape(train_set_x_orig.shape[0], -1).T
-    test_set_x = test_set_x_orig.reshape(test_set_x_orig.shape[0], -1).T
-    # Definir los conjuntos de datos
-    train_set = Data(train_set_x, train_set_y, 255)
-    test_set = Data(test_set_x, test_set_y, 255)
-
-    # Se entrenan los modelos
-    
-    print("hipers")
-    print(hipers["values"][1]["apren"],hipers["values"][1]["reg"],hipers["values"][1]["it"])
-    model0 = Model(train_set, test_set, reg=True, alpha=hipers["values"][0]["apren"], lam=hipers["values"][0]["reg"],it=hipers["values"][0]["it"])
-    model0.training()
-    model1 = Model(train_set, test_set, reg=True, alpha=hipers["values"][1]["apren"], lam=hipers["values"][1]["reg"],it=hipers["values"][1]["it"])
-    model1.training()
-    model2 = Model(train_set, test_set, reg=True, alpha=hipers["values"][2]["apren"], lam=hipers["values"][2]["reg"],it=hipers["values"][2]["it"])
-    model2.training()
-    model3 = Model(train_set, test_set, reg=True, alpha=hipers["values"][3]["apren"], lam=hipers["values"][3]["reg"],it=hipers["values"][3]["it"])
-    model3.training()
-    model4 = Model(train_set, test_set, reg=True, alpha=hipers["values"][4]["apren"], lam=hipers["values"][4]["reg"],it=hipers["values"][4]["it"])
-    model4.training()
-    
-    
-    
-    return [model0,model1,model2,model3,model4]
 
 
 def entrenar_modelos_server_side(alp,lam,it):
@@ -161,7 +130,7 @@ def predecir_escudos(labels):
     definitive_test_x = train_set_x_orig.reshape(train_set_x_orig.shape[0], -1).T
     definitive_test = Data(definitive_test_x,train_set_y,255)#LO TENGO QUE DIVIDIR ENTRE 255?
     
-    modelos = entrenar_modelos_server_side(0.001,5,7777)
+    modelos = entrenar_modelos_server_side(0.001,5,1500)
      
     results = modelos[0].predict(definitive_test.x)#USAC
     print("RESULTADO PREDICCION::")
@@ -169,6 +138,7 @@ def predecir_escudos(labels):
     for ii in range(len(results[0])):
         res = results[0][ii]
         if res == 1:
+            #if ii not in usados:
             resultados.append((labels[ii],'USAC'))
             usados.append(ii)
             contusac += 1
@@ -180,9 +150,11 @@ def predecir_escudos(labels):
     for ii in range(len(results[0])):
         res = results[0][ii]
         if res == 1:
+            #if ii not in usados:
             resultados.append((labels[ii],'LANDIVAR'))
             usados.append(ii)
             contlandivar += 1
+    
     results = modelos[2].predict(definitive_test.x)#MARIANO
     print("RESULTADO PREDICCION::")
     print(results[0])
@@ -190,9 +162,11 @@ def predecir_escudos(labels):
     for ii in range(len(results[0])):
         res = results[0][ii]
         if res == 1:
+            #if ii not in usados:
             resultados.append((labels[ii],'MARIANO'))
             usados.append(ii)
             contmariano += 1
+    
     results = modelos[3].predict(definitive_test.x)#MARRO
     print("RESULTADO PREDICCION::")
     print(results[0])
@@ -200,9 +174,11 @@ def predecir_escudos(labels):
     for ii in range(len(results[0])):
         res = results[0][ii]
         if res == 1:
+            #if ii not in usados:
             resultados.append((labels[ii],'MARRO'))
             usados.append(ii)
             contmarro += 1
+    
     print("En usados::::",usados)
     for index in range(len(labels)):
         if index not in usados:
@@ -215,5 +191,20 @@ def predecir_escudos(labels):
     # = model1.predict(definitive_test.x)
 #prissnt(result)
 #print(result[0])
+def entreno_envivo(alp,lam,it):
+    modelos = entrenar_modelos_server_side(alp,lam,it)
+    imagen = Plotter.show_Model(modelos)
+    #GUARDO LA INFO DE LA CORRIDA...
+    fp = os.path.join('Results','entreno_envivo_'+str(alp)+'_'+str(lam)+"_"+str(it))
+    os.mkdir(fp)
+    imagen.savefig(fp+'/chart.png')
+    info = [
+        {'nombre':'Modelo1','exactitud-entreno':modelos[0].train_accuracy,'exactitud-validacion':modelos[0].test_accuracy},
+        {'nombre':'Modelo2','exactitud-entreno':modelos[1].train_accuracy,'exactitud-validacion':modelos[1].test_accuracy},
+        {'nombre':'Modelo3','exactitud-entreno':modelos[2].train_accuracy,'exactitud-validacion':modelos[2].test_accuracy},
+        {'nombre':'Modelo4','exactitud-entreno':modelos[3].train_accuracy,'exactitud-validacion':modelos[3].test_accuracy},
+    ]
+    with open(fp+'/info.json','w') as ff:
+        json.dump(info,ff)
 
-
+#entreno_envivo()
