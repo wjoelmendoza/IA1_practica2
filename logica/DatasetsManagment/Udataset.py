@@ -2,7 +2,7 @@ import glob
 import os
 import numpy as np
 import h5py
-import cv2
+
 class Udataset:
     origin = ''
     def __init__(selfh):

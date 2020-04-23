@@ -1,11 +1,11 @@
-from .DatasetsManagment.Udataset import Udataset
-from .Logistic_Regression.Model import Model
-from .Logistic_Regression.Data import Data
-from .Logistic_Regression import Plotter
+from DatasetsManagment.Udataset import Udataset
+from Logistic_Regression.Model import Model
+from Logistic_Regression.Data import Data
+from Logistic_Regression import Plotter
 import matplotlib.pyplot as plt
 import skimage.transform
 import numpy as np
-import cv2
+
 import os
 import json
 from datetime import datetime
@@ -46,10 +46,10 @@ def entrenar_modelos_server_side(alp,lam,it):
     c = Udataset()
     #path = '/Datasets'+name+'.hdf5'
     #Cargando conjuntos de datos
-    usac_train_set_x_orig, usac_train_set_y, usac_test_set_x_orig, usac_test_set_y, classes = c.load_dataset(os.getcwd()+'/logica/Datasets','USAC',True)
-    landivar_train_set_x_orig, landivar_train_set_y, landivar_test_set_x_orig, landivar_test_set_y, classes = c.load_dataset(os.getcwd()+'/logica/Datasets','Landivar',True)
-    mariano_train_set_x_orig, mariano_train_set_y, mariano_test_set_x_orig, mariano_test_set_y, classes = c.load_dataset(os.getcwd()+'/logica/Datasets','Mariano',True)
-    marro_train_set_x_orig, marro_train_set_y, marro_test_set_x_orig, marro_test_set_y, classes = c.load_dataset(os.getcwd()+'/logica/Datasets','Marroquin',True)
+    usac_train_set_x_orig, usac_train_set_y, usac_test_set_x_orig, usac_test_set_y, classes = c.load_dataset(os.getcwd()+'/Datasets','USAC',True)
+    landivar_train_set_x_orig, landivar_train_set_y, landivar_test_set_x_orig, landivar_test_set_y, classes = c.load_dataset(os.getcwd()+'/Datasets','Landivar',True)
+    mariano_train_set_x_orig, mariano_train_set_y, mariano_test_set_x_orig, mariano_test_set_y, classes = c.load_dataset(os.getcwd()+'/Datasets','Mariano',True)
+    marro_train_set_x_orig, marro_train_set_y, marro_test_set_x_orig, marro_test_set_y, classes = c.load_dataset(os.getcwd()+'/Datasets','Marroquin',True)
 
     #print("---convertir imagenes a un solo arreglo::")
     #print(train_set_x_orig.shape[0])
@@ -96,11 +96,11 @@ def entrenar_modelos_server_side(alp,lam,it):
 
 def get_hiperparametros():
     return [
-            {'alp':0.001,"lam":5,"it":10000},
-            {'alp':0.001,"lam":10,"it":15000},
-            {'alp':0.0001,"lam":5,"it":10000},
-            {'alp':0.00001,"lam":10,"it":15000},
-            {'alp':0.000001,"lam":15,"it":10000},
+            {'alp':0.001,"lam":5,"it":1500},
+            {'alp':0.001,"lam":10,"it":1500},
+            {'alp':0.0001,"lam":5,"it":1500},
+            {'alp':0.00001,"lam":10,"it":1500},
+            {'alp':0.000001,"lam":15,"it":1500},
         ]
 
 #c = Udataset()
@@ -217,3 +217,4 @@ def predecir_escudos(labels):
 #print(result[0])
 
 
+entreno_previo("")
