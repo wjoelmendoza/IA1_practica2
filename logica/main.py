@@ -94,19 +94,37 @@ def entreno_previo(flag):
         print(len(modelos))
         imagen = Plotter.show_Model(modelos)
         #GUARDO LA INFO DE LA CORRIDA...
-        fp = os.path.join('Results','entreno_'+flag+'_'+str(hip['alp'])+'_'+str(hip['lam'])+'_'+str(hip['it']))
-        os.mkdir(fp)
-        imagen.savefig(fp+'/chart.png')
-        info = [
-            {'nombre':'Modelo1','exactitud-entreno':modelos[0].train_accuracy,'exactitud-validacion':modelos[0].test_accuracy},
-            {'nombre':'Modelo2','exactitud-entreno':modelos[1].train_accuracy,'exactitud-validacion':modelos[1].test_accuracy},
-            {'nombre':'Modelo3','exactitud-entreno':modelos[2].train_accuracy,'exactitud-validacion':modelos[2].test_accuracy},
-            {'nombre':'Modelo4','exactitud-entreno':modelos[3].train_accuracy,'exactitud-validacion':modelos[3].test_accuracy},
-        ]
-        with open(fp+'/info.json','w') as ff:
-            json.dump(info,ff)
+        #fp = os.path.join('Results','entreno_'+flag+'_'+str(hip['alp'])+'_'+str(hip['lam'])+'_'+str(hip['it']))
+        #os.mkdir(fp)
+        #imagen.savefig(fp+'/chart.png')
+        #info = [
+        #    {'nombre':'Modelo1','exactitud-entreno':modelos[0].train_accuracy,'exactitud-validacion':modelos[0].test_accuracy},
+        #    {'nombre':'Modelo2','exactitud-entreno':modelos[1].train_accuracy,'exactitud-validacion':modelos[1].test_accuracy},
+        #    {'nombre':'Modelo3','exactitud-entreno':modelos[2].train_accuracy,'exactitud-validacion':modelos[2].test_accuracy},
+        #    {'nombre':'Modelo4','exactitud-entreno':modelos[3].train_accuracy,'exactitud-validacion':modelos[3].test_accuracy},
+        #]
+        #with open(fp+'/info.json','w') as ff:
+        #    json.dump(info,ff)
+
+    betas = []
+    for mo in modelos:
+        betas.append(mo.betas)
+    
+    print("BETAS!!")
+    print(len(modelos))
+    print(betas)
+    with open('/home/bj/Documentos/IA/Practica2/IA1_practica2/infobetas.json','rw') as f:
+            json.dump(betas,f)
+        
 
    
+
+    #leer la cantidad de imagenes en el archivo
+    files = os.listdir(os.getcwd()+'/temporales2')
+    #CREO EL .H5 PARA EL DATASET DE LAS IMAGENES
+    c = Udataset()
+    labels = c.generate_dataset_for_prediction2()
+    return predecir_escudos2(labels)
 
 def identificar_escudos():
     #leer la cantidad de imagenes en el archivo
@@ -130,7 +148,7 @@ def predecir_escudos(labels):
     definitive_test_x = train_set_x_orig.reshape(train_set_x_orig.shape[0], -1).T
     definitive_test = Data(definitive_test_x,train_set_y,255)#LO TENGO QUE DIVIDIR ENTRE 255?
     
-    modelos = entrenar_modelos_server_side(0.001,5,1500)
+    modelos = entrenar_modelos_server_side(0.001,10,1500)
      
     results = modelos[0].predict(definitive_test.x)#USAC
     print("RESULTADO PREDICCION::")
@@ -188,7 +206,84 @@ def predecir_escudos(labels):
 
     return resultados, contusac,contlandivar,contmariano,contmarro,cont,labels    
 
-    # = model1.predict(definitive_test.x)
+
+
+def predecir_escudos2(labels):
+    contusac = 0
+    contlandivar = 0
+    contmariano = 0
+    contmarro = 0
+    cont = 0
+    usados = []
+    resultados = []
+    #cargo h5 de las imagenes para prueba
+    c = Udataset()
+    train_set_x_orig, train_set_y,classes = c.load_dataset(os.getcwd()+'/temporales2','dataset-test',False)
+    definitive_test_x = train_set_x_orig.reshape(train_set_x_orig.shape[0], -1).T
+    definitive_test = Data(definitive_test_x,train_set_y,255)#LO TENGO QUE DIVIDIR ENTRE 255?
+    
+    modelos = entrenar_modelos_server_side(0.001,10,1500)
+     
+    results = modelos[0].predict(definitive_test.x)#USAC
+    print("RESULTADO PREDICCION::")
+    print(results[0])
+    for ii in range(len(results[0])):
+        res = results[0][ii]
+        if res == 1:
+            #if ii not in usados:
+            resultados.append((labels[ii],'USAC'))
+            usados.append(ii)
+            contusac += 1
+        
+    results = modelos[1].predict(definitive_test.x)#LANDIVAR
+    print("RESULTADO PREDICCION::")
+    print(results[0])
+    
+    for ii in range(len(results[0])):
+        res = results[0][ii]
+        if res == 1:
+            #if ii not in usados:
+            resultados.append((labels[ii],'LANDIVAR'))
+            usados.append(ii)
+            contlandivar += 1
+    
+    results = modelos[2].predict(definitive_test.x)#MARIANO
+    print("RESULTADO PREDICCION::")
+    print(results[0])
+    
+    for ii in range(len(results[0])):
+        res = results[0][ii]
+        if res == 1:
+            #if ii not in usados:
+            resultados.append((labels[ii],'MARIANO'))
+            usados.append(ii)
+            contmariano += 1
+    
+    results = modelos[3].predict(definitive_test.x)#MARRO
+    print("RESULTADO PREDICCION::")
+    print(results[0])
+    
+    for ii in range(len(results[0])):
+        res = results[0][ii]
+        if res == 1:
+            #if ii not in usados:
+            resultados.append((labels[ii],'MARRO'))
+            usados.append(ii)
+            contmarro += 1
+    
+    print("En usados::::",usados)
+    for index in range(len(labels)):
+        if index not in usados:
+            print("not in:",index,usados)
+            resultados.append((labels[index],'ERROR'))
+            cont += 1
+
+    return resultados, contusac,contlandivar,contmariano,contmarro,cont,labels    
+
+
+
+
+# = model1.predict(definitive_test.x)
 #prissnt(result)
 #print(result[0])
 def entreno_envivo(alp,lam,it):
@@ -207,4 +302,12 @@ def entreno_envivo(alp,lam,it):
     with open(fp+'/info.json','w') as ff:
         json.dump(info,ff)
 
+    betas = []
+    for mo in modelos:
+        with open('/home/bj/Documentos/IA/Practica2/IA1_practica2/infobetas.json','w') as f:
+            json.dump(str(mo.betas),f)
+
+    
+    
+    
 #entreno_envivo()

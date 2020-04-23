@@ -88,6 +88,54 @@ class Udataset:
         f.close()
         return addrs
 
+   
+        hdf5_path = os.getcwd()+'/temporales/dataset-test.hdf5'
+        origen = os.getcwd()+'/temporales'
+        addrs = glob.glob(origen+'/*.jpg')
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        print(addrs)
+        labels = [1 for addr in addrs]
+        train_addrs = addrs[0:int(len(addrs))]
+        train_labels = labels[0:int(len(labels))]
+        #test_addrs = addrs[int(len(addrs)):]
+        #test_labels = labels[int(1*len(labels)):]
+        ##################### second part: create the h5py object #####################
+        train_shape = (len(train_addrs), 128, 128, 3)
+        #test_shape = (len(test_addrs), 128, 128, 3)
+
+        # open a hdf5 file and create earrays 
+        f = h5py.File(hdf5_path, mode='w')
+
+        # PIL.Image: the pixels range is 0-255,dtype is uint.
+        # matplotlib: the pixels range is 0-1,dtype is float.
+        f.create_dataset("train_img", train_shape, np.uint8)
+        #f.create_dataset("test_img", test_shape, np.uint8)  
+
+        # the ".create_dataset" object is like a dictionary, the "train_labels" is the key. 
+        f.create_dataset("train_labels", (len(train_addrs),), np.uint8)
+        f["train_labels"][...] = train_labels
+
+        #f.create_dataset("test_labels", (len(test_addrs),), np.uint8)
+        #f["test_labels"][...] = test_labels
+
+        ######################## third part: write the images #########################
+        # loop over train paths
+        for i in range(len(train_addrs)):
+        
+            if i % 1000 == 0 and i > 1:
+                print ('Train data: {}/{}'.format(i, len(train_addrs)) )
+
+            addr = train_addrs[i]
+            img = cv2.imread(addr)
+            img = cv2.resize(img, (128, 128), interpolation=cv2.INTER_CUBIC)# resize to (128,128)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) # cv2 load images as BGR, convert it to RGB
+            f["train_img"][i, ...] = img[None] 
+
+
+
+        f.close()
+        return addrs
+
 
     def generate_dataset(self,name,flag):
         hdf5_path = 'Datasets/'+name+'.hdf5'
@@ -164,3 +212,6 @@ class Udataset:
             f["test_img"][i, ...] = img[None]
 
         f.close()
+
+
+

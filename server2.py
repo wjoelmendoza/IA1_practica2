@@ -46,8 +46,8 @@ def Entrenar():
 
 @app.route("/cargar_imagenes", methods=['POST'])
 def cargar_imagenes():
-    for filename in os.listdir(os.getcwd()+'/temporales'):
-        os.unlink(os.getcwd()+'/temporales/'+filename)
+    for filename in os.listdir(os.getcwd()+'/temporales2'):
+        os.unlink(os.getcwd()+'/temporales2/'+filename)
   
     files = request.files
     fl = files.listvalues()
@@ -55,10 +55,10 @@ def cargar_imagenes():
 
     for f  in fl:
         for f2 in f:
-            rec = './temporales/' + f2.filename
+            rec = './temporales2/' + f2.filename
             f2.save(rec)
     conts = [0,0,0,0,0]
-    for filename in os.listdir(os.getcwd()+'/temporales'):
+    for filename in os.listdir(os.getcwd()+'/temporales2'):
         sp = filename.split('_')
         if sp[0] == 'USAC':
             conts[0] +=1
@@ -180,8 +180,8 @@ def decode_info(path):
         
 if __name__ == "__main__":
     try:
-        os.mkdir("./temporales")
+        os.mkdir("./temporales2")
     except FileExistsError:
         pass
 
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run(host="0.0.0.0", port=8000, debug=True)
